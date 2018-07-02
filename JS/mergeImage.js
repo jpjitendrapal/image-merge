@@ -7,7 +7,7 @@ var counter = 1;
 
 function mergeImage(imgPath, pogId) {
     imageAr = [
-        { src: './JS/stencils/500X500Test.png', x: 0, y: 0, opacity: 1 }
+        { src: './stencils/500X500Test.png', x: 0, y: 0, opacity: 1 }
         , { src: imgPath, x: 100, y: 50, opacity: 1 }
     ];
 
@@ -20,7 +20,7 @@ function mergeImage(imgPath, pogId) {
     })
         .then(function (b64) {
             var base64Data = b64.replace(/^data:image\/png;base64,/, "");
-            require("fs").writeFile("./JS/destImages/" + pogId + ".jpg", base64Data, 'base64', function (err) {
+            require("fs").writeFile("./destImages/" + pogId + ".jpg", base64Data, 'base64', function (err) {
                 console.log(counter + ". Successully created merge image for POG: " + pogId);
                 counter++;
             });
@@ -39,7 +39,7 @@ function downloadAndMerge(imgUrl, pogId) {
     }
     var options = {
         url: imgUrl, // 'https://n2.sdlcdn.com/imgs/g/4/g/large/2018_04_19-b7445.jpg',
-        dest: './JS/srcImages/' + pogId + '.jpg'
+        dest: './srcImages/' + pogId + '.jpg'
     }
 
     download.image(options)
