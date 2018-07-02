@@ -6,8 +6,13 @@ const fs = require('fs');
 var CsvReadableStream = require('csv-reader');
 var baseUrl = "https://mobileapi.snapdeal.com/service/get/product/getProductDetails?responseProtocol=PROTOCOL_JSON&requestProtocol=PROTOCOL_JSON&apiKey=snapdeal&productId=";
 var pogList=[];
-
-function createImage(productUrl) {
+const MAXREQ=5;
+var parallelReqCount = 0;
+function createImage(productUrl, pogid) {
+    if(parallelReqCount > MAXREQ){
+        return;
+    }
+    parallelReqCount++;
     fetch(productUrl,
         {
             "credentials": "include",
@@ -22,38 +27,44 @@ function createImage(productUrl) {
         })
         .then(function (res) {
             var productDetail = res;
+            parallelReqCount--;
             if (productDetail.successful) {
                 var imgUrl = productDetail.productDetailsSRO.limgs[0];
                 var pogId = productDetail.productDetailsSRO.basePogId;
-                // console.log("Downloaded image for POG: ", pogId, "Img Url: ", imgUrl);
+                // imgUrl = imgUrl.replace("large","fashion_85b_pdp");
                 mi.downloadAndMerge(imgUrl, pogId);
-                if(!!pogList.length){
-                    createImage(baseUrl+pogList.pop());
+                if(pogList.length > 0){
+                    let pogid = pogList.pop();
+                    createImage(baseUrl+pogid, pogid);
                 }
             } else {
                 console.log("Unable to get product detail for: ", productUrl);
             }
-            // console.log(myJson);
         })
         .catch(function(e){
-            console.log(e);
+            parallelReqCount--;
+            pogList.push(pogid);
+            console.log("Unable to fetch");
+            if(pogList.length > 0){
+                let pogid = pogList.pop();
+                createImage(baseUrl+pogid, pogid);
+            }
         })
 }
 
 // var pogList = [680673440602,620665329699,1273890971,663785543633,668559738219,645423814437];
 function readPOG(){
-    var inputStream = fs.createReadStream('./pogCsv/data2.csv', 'utf8'); 
+    var inputStream = fs.createReadStream('./pogCsv/data.csv', 'utf8'); 
+    var pogid;
     inputStream
         .pipe(CsvReadableStream({ parseNumbers: true, parseBooleans: true, trim: true }))
         .on('data', function (row) {
-            // console.log('A row arrived: ', row);
             pogList.push(row[0]);
-            console.log(pogList);
         })
         .on('end', function (data) {
-            for(var i in pogList){
-                console.log("Creating image", pogList);
-                createImage(baseUrl+pogList.pop());
+            while(pogList.length>0 && parallelReqCount < MAXREQ){
+                pogid = pogList.pop();
+                createImage(baseUrl+pogid, pogid);
             }
         });
 }
@@ -63,6 +74,3 @@ module.exports = {
     readPOG: readPOG
 }
     
-
-
-
