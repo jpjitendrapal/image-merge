@@ -2,13 +2,13 @@
 const mergeImages = require('merge-images');
 const Canvas = require('canvas');
 const download = require('image-downloader');
-
-var counter = 1;
+// const ri = require('./JS/resizeImage.js'); 
+var img_counter = 1;
 
 function mergeImage(imgPath, pogId) {
     imageAr = [
-        { src: './stencils/500X500Test.png', x: 0, y: 0, opacity: 1 }
-        , { src: imgPath, x: 100, y: 50, opacity: 1 }
+        { src: ImgConfig.stensilType, x: 0, y: 0, opacity: 1 }
+        , { src: imgPath, x: ImgConfig.PositionLeft, y: ImgConfig.PositionTop, opacity: 1 }
     ];
 
     mergeImages(imageAr, {
@@ -20,9 +20,9 @@ function mergeImage(imgPath, pogId) {
     })
         .then(function (b64) {
             var base64Data = b64.replace(/^data:image\/png;base64,/, "");
-            require("fs").writeFile("./destImages/" + pogId + ".jpg", base64Data, 'base64', function (err) {
-                console.log(counter + ". Successully created merge image for POG: " + pogId);
-                counter++;
+            require("fs").writeFile(ImgConfig.destFolder + pogId + ".jpg", base64Data, 'base64', function (err) {
+                console.log(img_counter + ". Successully created merge image for POG: " + pogId);
+                img_counter++;
             });
         }
         )
@@ -39,12 +39,16 @@ function downloadAndMerge(imgUrl, pogId) {
     }
     var options = {
         url: imgUrl, // 'https://n2.sdlcdn.com/imgs/g/4/g/large/2018_04_19-b7445.jpg',
-        dest: './srcImages/' + pogId + '.jpg'
+        dest: ImgConfig.srcFolder + pogId + '.jpg'
     }
 
     download.image(options)
         .then(({ filename, image }) => {
-            mergeImage(filename, pogId);
+            ri.resizeImg(filename,ImgConfig.IMGWidth,ImgConfig.IMGHeight)
+            .then(function(){
+                mergeImage(filename, pogId);
+            })
+            
         })
         .catch((err) => {
             console.error(err)

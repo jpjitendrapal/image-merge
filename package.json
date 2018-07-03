@@ -19,10 +19,14 @@
   "homepage": "https://github.com/jpjitendrapal/image-merge#readme",
   "dependencies": {
     "ajax-request": "^1.2.3",
-    "canvas": "",
+    "canvas": "^1.6.11",
     "csv-reader": "^1.0.3",
+    "gm": "^1.23.1",
+    "graphicsmagick": "0.0.1",
     "image-downloader": "^3.4.1",
-    "merge-images": "",
-    "node-fetch": "^2.1.2"
+    "imagemagick": "^0.1.3",
+    "merge-images": "^1.1.0",
+    "node-fetch": "^2.1.2",
+    "node-gyp": "^3.7.0"
   }
 }

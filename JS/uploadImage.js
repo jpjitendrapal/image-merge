@@ -2,10 +2,14 @@
 const fs = require('fs');
 var fetch = require('node-fetch');
 
-function getImgData(imgUrl){
+function getImgData(imgUrl, pogId){
+    if(!pogId){
+        console.log("Provide pogid while uploading image to mrg");
+        return;
+    }
     fs.readFile('./destImages/1273890971.jpg', function(err, data) {
         if (err) throw err;
-        uploadImg(data);
+        uploadImg(data, pogId);
         // Encode to base64
         //var encodedImage = new Buffer(data, 'binary').toString('base64');
         // Decode from base64
@@ -13,8 +17,8 @@ function getImgData(imgUrl){
         });
 }
 
-function uploadImg(imgData){
-    var cdnUrl = "https://n1.sdlcdn.com/save/image?prewarm=false&ispdffile=false&path=/imgs/a/b/c/myImg123.jpg";
+function uploadImg(imgData, pogId){
+    var cdnUrl = "https://n1.sdlcdn.com/save/image?prewarm=false&ispdffile=false&" + ImgConfig.mrgBucket + pogId + "_stencil_fb.jpg";
     fetch(cdnUrl,
         {
             "credentials": "include",
@@ -25,7 +29,7 @@ function uploadImg(imgData){
             "mode": "cors",
             "data": binaryString
         }).then(function(res){
-            console.log("Img uploaded");
+            console.log("Img uploaded for pog id: "+pogId);
         })
         .catch(function(e){
             console.log(e);

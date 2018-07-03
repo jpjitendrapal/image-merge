@@ -2,10 +2,12 @@
 
 var fetch = require('node-fetch');
 var mi = require('./mergeImage');
+ri = require('./resizeImage');
 const fs = require('fs');
 var CsvReadableStream = require('csv-reader');
 var baseUrl = "https://mobileapi.snapdeal.com/service/get/product/getProductDetails?responseProtocol=PROTOCOL_JSON&requestProtocol=PROTOCOL_JSON&apiKey=snapdeal&productId=";
 var pogList=[];
+
 const MAXREQ=5;
 var parallelReqCount = 0;
 function createImage(productUrl, pogid) {
@@ -29,7 +31,7 @@ function createImage(productUrl, pogid) {
             var productDetail = res;
             parallelReqCount--;
             if (productDetail.successful) {
-                var imgUrl = productDetail.productDetailsSRO.limgs[0];
+                var imgUrl = productDetail.productDetailsSRO.imgs[0];
                 var pogId = productDetail.productDetailsSRO.basePogId;
                 // imgUrl = imgUrl.replace("large","fashion_85b_pdp");
                 mi.downloadAndMerge(imgUrl, pogId);
@@ -53,8 +55,8 @@ function createImage(productUrl, pogid) {
 }
 
 // var pogList = [680673440602,620665329699,1273890971,663785543633,668559738219,645423814437];
-function readPOG(){
-    var inputStream = fs.createReadStream('./pogCsv/data.csv', 'utf8'); 
+function readPOG(csvFilePath){
+    var inputStream = fs.createReadStream(csvFilePath, 'utf8'); 
     var pogid;
     inputStream
         .pipe(CsvReadableStream({ parseNumbers: true, parseBooleans: true, trim: true }))
