@@ -44,7 +44,6 @@ function downloadAndMerge(imgUrl, pogId) {
 
     download.image(options)
         .then(({ filename, image }) => {
-                
             mergeImage(filename, pogId);
         })
         .catch((err) => {
