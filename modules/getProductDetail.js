@@ -1,8 +1,7 @@
-
-
 var fetch = require('node-fetch');
 var mi = require('./mergeImage');
 ri = require('./resizeImage');
+uploadImage = require('./uploadImage'); 
 const fs = require('fs');
 var CsvReadableStream = require('csv-reader');
 var baseUrl = "https://mobileapi.snapdeal.com/service/get/product/getProductDetails?responseProtocol=PROTOCOL_JSON&requestProtocol=PROTOCOL_JSON&apiKey=snapdeal&productId=";
