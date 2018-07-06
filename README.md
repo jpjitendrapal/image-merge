@@ -1,6 +1,6 @@
-# image-merge
-Merge multiple images into single image
-
-Following are the commans required to run:
+Following are the commans required to run this project:
 brew install GraphicsMagick
-npm install -g gm
+npm install
+
+In index.js file update all the configuration values accordingly then run this command: 
+node index.js

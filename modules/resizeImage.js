@@ -14,12 +14,6 @@ function resizeImg(imgUrl, width, height){
     });
   })  
 }
-
-// resizeImg("./srcImages/629709575229.jpg",400,400)
-// .then(function(){
-//   console.log("done!!!");
-// })
-
 module.exports = {
   resizeImg: resizeImg
 }
